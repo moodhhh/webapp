@@ -14,7 +14,7 @@ bot.onText(/\/start/, (msg) => {
         [
           {
             text: "📰 Open Articles",
-            web_app: { url: "https://yourusername.github.io/telegram-app/" } // your GitHub Pages link
+            web_app: { url: "https://moodhhh.github.io/webapp/" } // your GitHub Pages link
           }
         ]
       ]
