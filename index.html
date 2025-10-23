@@ -16,32 +16,28 @@
   <div id="articles"></div>
 
   <script>
-    const feedUrl = 'https://magenotez.blogspot.com/feeds/posts/default?alt=rss';
-    const target = document.getElementById('articles');
-
-    fetch(feedUrl)
-      .then(resp => resp.text())
-      .then(str => ( new window.DOMParser() ).parseFromString(str, "text/xml"))
-      .then(data => {
-        const items = data.querySelectorAll("item");
-        items.forEach(item => {
-          const title = item.querySelector("title").textContent;
-          const link  = item.querySelector("link").textContent;
-          const description = item.querySelector("description")?.textContent || "";
+  const feed = "https://api.rss2json.com/v1/api.json?rss_url=https://magenotez.blogspot.com/feeds/posts/default?alt=rss";
   
-          const div = document.createElement("div");
-          div.className = "item";
-          div.innerHTML = `
-            <a href="${link}" target="_blank">${title}</a>
-            <p>${description}</p>
-          `;
-          target.appendChild(div);
-        });
-      })
-      .catch(err => {
-        console.error("Failed to load feed:", err);
-        target.innerHTML = "<p>Sorry, could not load articles.</p>";
+  fetch(feed)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("articles");
+      container.innerHTML = "";
+      data.items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "article";
+        div.innerHTML = `
+          <a href="${item.link}" target="_blank">${item.title}</a>
+          <p>${new Date(item.pubDate).toLocaleDateString()}</p>
+        `;
+        container.appendChild(div);
       });
-  </script>
+    })
+    .catch(err => {
+      document.getElementById("articles").innerText = "Failed to load posts.";
+      console.error(err);
+    });
+</script>
+
 </body>
 </html>
