@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Articles</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .item { margin-bottom: 20px; }
+    .item a { font-size: 1.2em; font-weight: bold; color: #333; text-decoration: none; }
+    .item p { margin: 5px 0; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Latest Articles</h1>
+  <div id="articles"></div>
+
+  <script>
+    const feedUrl = 'https://magenotez.blogspot.com/feeds/posts/default?alt=rss';
+    const target = document.getElementById('articles');
+
+    fetch(feedUrl)
+      .then(resp => resp.text())
+      .then(str => ( new window.DOMParser() ).parseFromString(str, "text/xml"))
+      .then(data => {
+        const items = data.querySelectorAll("item");
+        items.forEach(item => {
+          const title = item.querySelector("title").textContent;
+          const link  = item.querySelector("link").textContent;
+          const description = item.querySelector("description")?.textContent || "";
+  
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <a href="${link}" target="_blank">${title}</a>
+            <p>${description}</p>
+          `;
+          target.appendChild(div);
+        });
+      })
+      .catch(err => {
+        console.error("Failed to load feed:", err);
+        target.innerHTML = "<p>Sorry, could not load articles.</p>";
+      });
+  </script>
+</body>
+</html>
